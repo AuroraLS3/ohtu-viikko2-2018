@@ -3,14 +3,18 @@ package ohtu.verkkokauppa.toteutus;
 import ohtu.verkkokauppa.Kirjanpito;
 import ohtu.verkkokauppa.Tuote;
 import ohtu.verkkokauppa.Varasto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class VarastoImpl implements Varasto {
     
     private final Kirjanpito kirjanpito;
     private HashMap<Tuote, Integer> saldot;
-    
+
+    @Autowired
     public VarastoImpl(Kirjanpito kirjanpito) {
         this.kirjanpito = kirjanpito;
         saldot = new HashMap<Tuote, Integer>();

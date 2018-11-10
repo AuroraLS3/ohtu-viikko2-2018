@@ -1,7 +1,10 @@
 package ohtu.verkkokauppa.toteutus;
 
 import ohtu.verkkokauppa.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class KauppaImpl implements Kauppa {
 
     private final Varasto varasto;
@@ -11,6 +14,7 @@ public class KauppaImpl implements Kauppa {
     private Ostoskori ostoskori;
     private String kaupanTili;
 
+    @Autowired
     public KauppaImpl(Varasto varasto, Pankki pankki, Viitegeneraattori viitegeneraattori) {
         this.varasto = varasto;
         this.pankki = pankki;
