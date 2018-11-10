@@ -1,4 +1,6 @@
-package ohtu.verkkokauppa;
+package ohtu.verkkokauppa.toteutus;
+
+import ohtu.verkkokauppa.Tuote;
 
 import java.util.ArrayList;
 
