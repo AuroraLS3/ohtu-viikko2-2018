@@ -1,5 +1,6 @@
 package ohtu;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -147,5 +148,21 @@ public class Stepdefs {
     @And("^submit is clicked$")
     public void submitIsClicked() throws Throwable {
         pressSubmit("signup");
+    }
+
+    @Given("^user with username \"([^\"]*)\" with password \"([^\"]*)\" is successfully created$")
+    public void userWithUsernameWithPasswordIsSuccessfullyCreated(String username, String password) throws Throwable {
+        new_user_selected();
+        validUserNameIsEntered(username);
+        invalidPasswordAndMatchingPasswordConfirmationAreEntered(password);
+        submitIsClicked();
+    }
+
+    @Given("^user with username \"([^\"]*)\" and password \"([^\"]*)\" is tried to be created$")
+    public void userWithUsernameAndPasswordIsTriedToBeCreated(String badName, String badPass) throws Throwable {
+        new_user_selected();
+        invalidUserNameIsEntered(badName);
+        invalidPasswordAndMatchingPasswordConfirmationAreEntered(badPass);
+        submitIsClicked();
     }
 }
