@@ -1,6 +1,7 @@
 package ohtu;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.http.client.fluent.Request;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class Main {
         for (Map.Entry<String, List<Submission>> entry : submissions.entrySet()) {
             String courseName = entry.getKey();
             Course course = courses.get(courseName);
+            Collection<Stats> stats = getCourseWeekStats(courseName);
             System.out.println(course.getFullName() + " " + course.getTerm() + " " + course.getYear() + "\n");
 
             for (Submission submission : entry.getValue()) {
@@ -50,7 +52,24 @@ public class Main {
             long exercisesMax = course.getExercises().stream().mapToLong(i -> i).sum();
             long hours = entry.getValue().stream().mapToLong(Submission::getHours).sum();
             System.out.println("\nyhteensä: " + exercises + "/" + exercisesMax + " tehtävää " + hours + " tuntia\n");
+
+            long returned = stats.stream().mapToLong(Stats::getStudents).sum();
+            long exercisesTotal = stats.stream().mapToLong(Stats::getExerciseTotal).sum();
+            double hoursTotal = stats.stream().mapToDouble(Stats::getHoursTotal).sum();
+
+            System.out.println("kurssilla on yhteensä " + returned
+                    + " palautusta, palautettuja tehtäviä " + exercisesTotal
+                    + " kpl, aikaa käytetty yhteensä " + hoursTotal + " tuntia\n");
         }
+    }
+
+    private static Collection<Stats> getCourseWeekStats(String course) throws IOException {
+        String url = "https://studies.cs.helsinki.fi/courses/" + course + "/stats/";
+
+        String bodyText = Request.Get(url).execute().returnContent().asString();
+
+        Map<Integer, Stats> map = MAPPER.fromJson(bodyText, new TypeToken<Map<Integer, Stats>>() {}.getType());
+        return map.values();
     }
 
     private static Course[] getCourses() throws IOException {
