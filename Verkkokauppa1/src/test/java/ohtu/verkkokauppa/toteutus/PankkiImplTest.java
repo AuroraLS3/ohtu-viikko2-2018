@@ -94,4 +94,67 @@ public class PankkiImplTest {
         verify(pankki).tilisiirto(eq("pekka"), eq(42), eq("12345"), eq("33333-44455"), eq(5));
     }
 
+    @Test
+    public void aloitaAsiointiNollaaEdellisenAsioinnin() {
+        Pankki pankki = mock(Pankki.class);
+
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+        when(viite.uusi()).thenReturn(42);
+
+        Varasto varasto = mockVarasto();
+
+        Kauppa k = new KauppaImpl(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.tilimaksu("pekka", "12345");
+
+        verify(pankki).tilisiirto(eq("pekka"), eq(42), eq("12345"), eq("33333-44455"), eq(5));
+
+        k.aloitaAsiointi();
+        k.tilimaksu("pekka", "12345");
+
+        // Edellinen ostos ei aiheuta maksua
+        // Sinänsä huono toteutus, että kauppa kutsuu pankkia vaikkei ole maksettavaa
+        verify(pankki).tilisiirto(eq("pekka"), eq(42), eq("12345"), eq("33333-44455"), eq(0));
+    }
+
+    @Test
+    public void uusiViitenumeroJokaAsioinnille() {
+        Pankki pankki = mock(Pankki.class);
+
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+        when(viite.uusi()).thenReturn(42);
+
+        Varasto varasto = mockVarasto();
+
+        Kauppa k = new KauppaImpl(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.tilimaksu("pekka", "12345");
+        k.aloitaAsiointi();
+        k.tilimaksu("pekka", "12345");
+
+        verify(viite, times(2)).uusi();
+    }
+
+    @Test
+    public void tyhjaKoriEiMaksa() {
+        Pankki pankki = mock(Pankki.class);
+
+        Viitegeneraattori viite = mock(Viitegeneraattori.class);
+        when(viite.uusi()).thenReturn(42);
+
+        Varasto varasto = mockVarasto();
+
+        Kauppa k = new KauppaImpl(varasto, pankki, viite);
+
+        k.aloitaAsiointi();
+        k.lisaaKoriin(1);
+        k.poistaKorista(1);
+        k.tilimaksu("pekka", "12345");
+
+        verify(pankki).tilisiirto(eq("pekka"), eq(42), eq("12345"), eq("33333-44455"), eq(0));
+    }
+
 }
