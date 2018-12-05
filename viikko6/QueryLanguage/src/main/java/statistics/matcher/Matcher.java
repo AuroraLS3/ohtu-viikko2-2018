@@ -3,6 +3,11 @@ package statistics.matcher;
 
 import statistics.Player;
 
-public interface Matcher {
-    boolean matches(Player p);
+import java.util.function.Predicate;
+
+public interface Matcher extends Predicate<Player> {
+    @Deprecated
+    default boolean matches(Player p) {
+        return test(p);
+    }
 }

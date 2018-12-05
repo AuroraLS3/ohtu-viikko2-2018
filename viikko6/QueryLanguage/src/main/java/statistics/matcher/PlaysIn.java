@@ -11,7 +11,7 @@ public class PlaysIn implements Matcher {
     }        
     
     @Override
-    public boolean matches(Player p) {
+    public boolean test(Player p) {
         return p.getTeam().contains(team);
     }
     

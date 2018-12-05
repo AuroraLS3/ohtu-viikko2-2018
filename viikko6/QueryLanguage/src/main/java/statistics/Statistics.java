@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Statistics {
     
@@ -50,14 +51,6 @@ public class Statistics {
     }
     
     public List<Player> matches(Matcher matcher) {
-        ArrayList<Player> matches = new ArrayList<Player>();
-        
-        for (Player player : players) {
-            if (matcher.matches(player)) {
-                matches.add(player);
-            }            
-        }
-        
-        return matches;
+        return players.stream().filter(matcher).collect(Collectors.toList());
     }
 }
